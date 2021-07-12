@@ -1,7 +1,7 @@
 
 import firebase from 'firebase/app'
 import 'firebase/auth'
-import { authProvider } from '../firebase-config'
+import { authProvider, databaseRef } from '../firebase-config'
 
 export const USER_RETRIEVED = "USER_RETRIEVED"
 
@@ -13,8 +13,12 @@ export const userRetrieved = (user) => ({
 export const SignIn = () => {
     return async (dispatch) => {
         let result = await firebase.auth().signInWithPopup(authProvider)
-        console.log(result.user)
-        dispatch(userRetrieved(result.user))
+        let user = result.user
+        let id = user.email.replace(/[.]/g, "-")
+        await databaseRef.collection("teachers").doc(id).set({
+            email: user.email
+        }, { merge: true })
+        dispatch(userRetrieved(user))
     }
 }
 

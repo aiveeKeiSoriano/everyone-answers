@@ -1,7 +1,10 @@
 
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components'
 import { signOut } from '../actions/authActions';
+import { getSession } from '../actions/sessionActions';
+import AnswersPage from './AnswersPage';
 import EnterNames from './EnterNames';
 
 const Container = styled.div`
@@ -9,8 +12,6 @@ const Container = styled.div`
     display: flex;
     flex-direction: column;
 `
-
-const AnswersPage = styled.div``
 
 const Nav = styled.div`
     display: flex;
@@ -26,8 +27,14 @@ const Nav = styled.div`
 
 export default function Dashboard() {
     let user = useSelector(state => state.auth.user)
+    let session = useSelector(state => state.session.session)
     let dispatch = useDispatch()
-    let session;
+    
+    useEffect(() => {
+        dispatch(getSession())
+        // eslint-disable-next-line
+    }, [])
+
     return (
         <Container>
             <Nav>
