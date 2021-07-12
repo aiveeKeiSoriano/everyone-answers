@@ -18,6 +18,7 @@ export default function Main() {
 
     useEffect(() => {
         dispatch(checkSignIn())
+        // eslint-disable-next-line
     }, [])
     // console.log(user)
     return (
