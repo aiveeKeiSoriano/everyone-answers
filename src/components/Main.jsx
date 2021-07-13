@@ -6,7 +6,7 @@ import Login from "./Login"
 import styled from 'styled-components'
 import { checkSignIn } from "../actions/authActions";
 import { useEffect } from "react";
-import { CircularProgress } from "@material-ui/core";
+import { LinearProgress } from "@material-ui/core";
 
 const Container = styled.div`
     width: 100%;
@@ -15,12 +15,10 @@ const Container = styled.div`
 `
 
 const Loading = styled.div`
+    width: 800px;
+    padding: 2em;
     display: flex;
-    justify-content: center;
     flex-direction: column;
-    align-items: center;
-    width: 100vw;
-    height: 100vh;
     gap: 1em;
 `
 
@@ -38,10 +36,10 @@ export default function Main() {
                 <Dashboard />
             : logged === false ?
                 <Login />
-            :   <Loading>
-                        <CircularProgress size={60} thickness={4} />
+                    : <Loading>
                         <Typography variant="h4">Loading...</Typography>
-                </Loading>
+                        <LinearProgress />
+                    </Loading>
         }
         </Container>
     )

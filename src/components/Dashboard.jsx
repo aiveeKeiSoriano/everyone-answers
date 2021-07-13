@@ -1,6 +1,8 @@
 
+import { LinearProgress } from '@material-ui/core';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import Typography from '@material-ui/core/Typography';
 import styled from 'styled-components'
 import { signOut } from '../actions/authActions';
 import { getSession } from '../actions/sessionActions';
@@ -25,11 +27,20 @@ const Nav = styled.div`
     }
 `
 
+const Loading = styled.div`
+    width: 800px;
+    padding: 2em;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    align-self: center;
+`
+
 export default function Dashboard() {
     let user = useSelector(state => state.auth.user)
     let session = useSelector(state => state.session.sessionID)
     let dispatch = useDispatch()
-    
+
     useEffect(() => {
         dispatch(getSession())
         // eslint-disable-next-line
@@ -37,14 +48,20 @@ export default function Dashboard() {
 
     return (
         <Container>
-            <Nav>
-                <img onClick={() => dispatch(signOut())} src={user.photoURL} alt="profile" />
-            </Nav>
-            {session ?
+            {session &&
+                <Nav>
+                    <img onClick={() => dispatch(signOut())} src={user.photoURL} alt="profile" />
+                </Nav>
+            }
+            {session && session !== "none" ?
                 <AnswersPage />
-                :
-                <EnterNames />
-            }   
+                : session === "none" ?
+                    <EnterNames />
+                : <Loading>
+                    <Typography variant="h4">Loading...</Typography>
+                    <LinearProgress />
+                </Loading>
+            }
         </Container>
     )
 }
