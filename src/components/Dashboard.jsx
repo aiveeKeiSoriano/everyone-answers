@@ -36,9 +36,17 @@ const Loading = styled.div`
     align-self: center;
 `
 
+const Error = styled.div`
+    display: flex;
+    flex-direction: column;
+    width: 800px;
+    align-self: center;
+`
+
 export default function Dashboard() {
     let user = useSelector(state => state.auth.user)
     let session = useSelector(state => state.session.sessionID)
+    let sessionError = useSelector(state => state.session.sessionError)
     let dispatch = useDispatch()
 
     useEffect(() => {
@@ -53,14 +61,19 @@ export default function Dashboard() {
                     <img onClick={() => dispatch(signOut())} src={user.photoURL} alt="profile" />
                 </Nav>
             }
-            {session && session !== "none" ?
-                <AnswersPage />
-                : session === "none" ?
-                    <EnterNames />
-                : <Loading>
-                    <Typography variant="h4">Loading...</Typography>
-                    <LinearProgress />
-                </Loading>
+            {session === "none" ?
+                <EnterNames />
+                : !session ?
+                    <Loading>
+                        <Typography variant="h3">Loading...</Typography>
+                        <LinearProgress />
+                    </Loading>
+                    : sessionError ?
+                        <Error>
+                            <Typography variant="h4">Error</Typography>
+                            <Typography vaiant="body1">Error getting document. FirebaseError: {sessionError}</Typography>
+                        </Error>
+                        : <AnswersPage />
             }
         </Container>
     )
