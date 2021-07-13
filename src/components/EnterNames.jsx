@@ -5,7 +5,7 @@ import TextField from '@material-ui/core/TextField';
 import { Button } from "@material-ui/core";
 import { useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { newSession, submitStatus } from '../actions/sessionActions';
+import { newSession, updateStatus } from '../actions/sessionActions';
 
 const Container = styled.div`
     width: 100%;
@@ -26,16 +26,16 @@ const Container = styled.div`
 
 export default function EnterNames() {
 
-    let status = useSelector(state => state.session.submitStatus)
+    let status = useSelector(state => state.session.status)
     let dispatch = useDispatch()
     let input = useRef()
 
     let submitNames = () => {
-        dispatch(submitStatus("Submitting..."))
+        dispatch(updateStatus("Submitting..."))
         let list = input.current.value.split(/[\n]|[,]/).map(word => word.trim()).filter(el => el !== '').sort()
         if (list.length === 0 || !list.every((el, i, arr) => el !== arr[i - 1])) {
             alert("Please make sure the list doesn't have duplicate names or empty")
-            dispatch(submitStatus(""))
+            dispatch(updateStatus(null))
         }
         else {
             dispatch(newSession(list))

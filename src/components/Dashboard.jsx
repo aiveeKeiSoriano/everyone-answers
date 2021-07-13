@@ -65,7 +65,7 @@ export default function Dashboard() {
                 <EnterNames />
                 : !session ?
                     <Loading>
-                        <Typography variant="h3">Loading...</Typography>
+                        <Typography variant="h4">Loading...</Typography>
                         <LinearProgress />
                     </Loading>
                     : sessionError ?

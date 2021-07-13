@@ -1,8 +1,10 @@
 
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import styled from 'styled-components'
 import Typography from '@material-ui/core/Typography';
 import { Grid } from '@material-ui/core';
+import { Button } from "@material-ui/core";
+import { deleteSession, updateStatus } from '../actions/sessionActions';
 
 const Container = styled.div`
     width: 100%;
@@ -15,6 +17,12 @@ const Container = styled.div`
 
     a {
         color: rgb(63,81,181);
+    }
+
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
 `
 
@@ -32,13 +40,36 @@ const Box = styled.div`
     }
 `
 
+const EndSession = styled.div`
+    display: flex;
+    gap: 1em;
+    align-items: center;
+`
+
 export default function AnswersPage() {
     let students = useSelector(state => state.session.students)
     let session = useSelector(state => state.session.sessionID)
+    let status = useSelector(state => state.session.status)
+    let dispatch = useDispatch()
     let link = "https://localhost:3000/student/" + session
+
+    let endSession = () => {
+        let endConfirmation = window.confirm("The session will be deleted permanently. Do you want to proceed?")
+        if (endConfirmation) {
+            dispatch(updateStatus("Ending session..."))
+            dispatch(deleteSession())
+        }
+    }
+
     return (
         <Container>
-            <Typography variant='h3'>Dashboard</Typography>
+            <div className="header">
+                <Typography variant='h3'>Dashboard</Typography>
+                <EndSession>
+                    <Typography variant="body1">{status}</Typography>
+                    <Button onClick={endSession} variant="contained">End Session</Button>
+                </EndSession>
+            </div>
             <Typography variant='body1'>Student Link: <a href={link}>{link}</a></Typography>
             <Grid container justifyContent="flex-start" spacing={2}>
                 {students.map((value) => (

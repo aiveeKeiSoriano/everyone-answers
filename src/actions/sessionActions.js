@@ -1,8 +1,9 @@
+import firebase from 'firebase/app'
 import { databaseRef } from "../firebase-config"
 
 export const SESSION_RETRIEVED = "SESSION_RETRIEVED"
 export const STUDENTS_RETRIEVED = "STUDENTS_RETRIEVED"
-export const SUBMIT_STATUS = "SUBMIT_STATUS"
+export const STATUS = "SUBMIT_STATUS"
 export const SESSION_ERROR = "SESSION_ERROR"
 
 export const sessionRetrieved = (session) => ({
@@ -15,8 +16,8 @@ export const studentsRetrieved = (students) => ({
     payload: students
 })
 
-export const submitStatus = (status) => ({
-    type: SUBMIT_STATUS,
+export const updateStatus = (status) => ({
+    type: STATUS,
     payload: status
 })
 
@@ -77,14 +78,27 @@ export const newSession = (students) => {
             dispatch(getSession())
         }
         catch (e) {
-            dispatch(submitStatus("Error: " + e.message))
+            dispatch(updateStatus("Error: " + e.message))
         }
     }
 }
 
 
-// export const deleteSession = () => {
-//     return async (dispatch, getState) => {
-//         databaseRef.collection("sessions").doc(getState().session.sessionID).delete()
-//     }
-// }
+export const deleteSession = () => {
+    return async (dispatch, getState) => {
+        try {
+            await databaseRef.collection("teachers").doc(getState().auth.user.databaseID).update({ session: firebase.firestore.FieldValue.delete() })
+            await databaseRef.collection("sessions").doc(getState().session.sessionID).collection("students").get().then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    databaseRef.collection("sessions").doc(getState().session.sessionID).collection("students").doc(doc.id).delete()
+                });
+            })
+            await databaseRef.collection("sessions").doc(getState().session.sessionID).delete()
+            dispatch(sessionRetrieved("none"))
+            dispatch(updateStatus(null))
+        }
+        catch (e) {
+            dispatch(updateStatus("Error: " + e.message))
+        }
+    }
+}
