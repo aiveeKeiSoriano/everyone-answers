@@ -15,7 +15,7 @@ export const studentsRetrieved = (students) => ({
 
 export const getSession = () => {
     return async (dispatch, getState) => {
-        let id = getState().auth.user.email.replace(/[.]/g, "-")
+        let id = getState().auth.user.databaseID
         let result = await databaseRef.collection("teachers").doc(id).get()
         let data = result.data()
         if (!data.session) {
@@ -41,10 +41,17 @@ export const newSession = (students) => {
     return async (dispatch, getState) => {
         let doc = await databaseRef.collection("sessions").add({})
         let id = doc.id
-        await databaseRef.collection("teachers").doc(getState().auth.user.email.replace(/[.]/g, "-")).set({session: id}, { merge: true })
+        await databaseRef.collection("teachers").doc(getState().auth.user.databaseID).set({session: id}, { merge: true })
         for (let student of students) {
-            await databaseRef.collection("sessions").doc(id).collection("students").doc(student).set({answer: ""}, { merge: true })
+            let studentsRef = databaseRef.collection("sessions").doc(id).collection("students")
+            await studentsRef.doc(student).set({ answer: "" }, { merge: true })
         }
         dispatch(getSession())
     }
 }
+
+// export const deleteSession = () => {
+//     return async (dispatch, getState) => {
+//         databaseRef.collection("sessions").doc(getState().session.sessionID).delete()
+//     }
+// }

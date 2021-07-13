@@ -23,8 +23,8 @@ export default function EnterNames() {
     let dispatch = useDispatch()
     let input = useRef()
     let submitNames = () => {
-        console.log(input.current.value.split(/[\n]|[,]/).map(word => word.trim()))
-        dispatch(newSession([]))
+        let list = input.current.value.split(/[\n]|[,]/).map(word => word.trim()).filter(el => el !== '')
+        dispatch(newSession(list))
     }
 
     return (

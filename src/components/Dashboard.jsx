@@ -27,7 +27,7 @@ const Nav = styled.div`
 
 export default function Dashboard() {
     let user = useSelector(state => state.auth.user)
-    let session = useSelector(state => state.session.session)
+    let session = useSelector(state => state.session.sessionID)
     let dispatch = useDispatch()
     
     useEffect(() => {

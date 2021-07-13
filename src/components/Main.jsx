@@ -1,10 +1,12 @@
 
 import { useDispatch, useSelector } from "react-redux";
+import Typography from '@material-ui/core/Typography';
 import Dashboard from "./Dashboard";
 import Login from "./Login"
 import styled from 'styled-components'
 import { checkSignIn } from "../actions/authActions";
 import { useEffect } from "react";
+import { CircularProgress } from "@material-ui/core";
 
 const Container = styled.div`
     width: 100%;
@@ -12,20 +14,34 @@ const Container = styled.div`
     justify-content: center;
 `
 
+const Loading = styled.div`
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+    gap: 1em;
+`
+
 export default function Main() {
-    let user = useSelector(state => state.auth.user)
+    let logged = useSelector(state => state.auth.logged)
     let dispatch = useDispatch()
 
     useEffect(() => {
         dispatch(checkSignIn())
         // eslint-disable-next-line
     }, [])
-    // console.log(user)
     return (
         <Container>
-            {user ?
+            {logged ?
                 <Dashboard />
-            : <Login />
+            : logged === false ?
+                <Login />
+            :   <Loading>
+                        <CircularProgress size={60} thickness={4} />
+                        <Typography variant="h4">Loading...</Typography>
+                </Loading>
         }
         </Container>
     )

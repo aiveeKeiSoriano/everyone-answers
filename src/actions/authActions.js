@@ -4,10 +4,15 @@ import 'firebase/auth'
 import { authProvider, databaseRef } from '../firebase-config'
 
 export const USER_RETRIEVED = "USER_RETRIEVED"
+export const LOGGED_OUT = "LOGGED_OUT"
 
 export const userRetrieved = (user) => ({
     type: USER_RETRIEVED,
     payload: user
+})
+
+export const loggedOut = () => ({
+    type: LOGGED_OUT
 })
 
 export const SignIn = () => {
@@ -18,7 +23,7 @@ export const SignIn = () => {
         await databaseRef.collection("teachers").doc(id).set({
             email: user.email
         }, { merge: true })
-        dispatch(userRetrieved(user))
+        dispatch(userRetrieved({ ...user, databaseID: id }))
     }
 }
 
@@ -26,7 +31,11 @@ export const checkSignIn = () => {
     return async (dispatch) => {
         firebase.auth().onAuthStateChanged((user) => {
             if (user) {
-                dispatch(userRetrieved(user))
+            let id = user.email.replace(/[.]/g, "-")
+                dispatch(userRetrieved({ ...user, databaseID: id }))
+            }
+            else {
+                dispatch(loggedOut())
             }
         })
     }
@@ -35,7 +44,7 @@ export const checkSignIn = () => {
 export const signOut = () => {
     return async (dispatch) => {
         firebase.auth().signOut().then(() => {
-            dispatch(userRetrieved())
+            dispatch(loggedOut())
           }).catch((error) => {
             // An error happened.
           });
