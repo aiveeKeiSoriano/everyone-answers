@@ -3,7 +3,7 @@ import { databaseRef } from "../firebase-config"
 
 export const SESSION_RETRIEVED = "SESSION_RETRIEVED"
 export const STUDENTS_RETRIEVED = "STUDENTS_RETRIEVED"
-export const STATUS = "SUBMIT_STATUS"
+export const STATUS = "STATUS"
 export const SESSION_ERROR = "SESSION_ERROR"
 
 export const sessionRetrieved = (session) => ({
@@ -105,11 +105,16 @@ export const deleteSession = () => {
 
 export const clearAnswers = () => {
     return async (dispatch, getState) => {
-        await databaseRef.collection("sessions").doc(getState().session.sessionID).collection("students").get().then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-                databaseRef.collection("sessions").doc(getState().session.sessionID).collection("students").doc(doc.id).update({answer: []}, {merge: true})
-            });
-        })
-        dispatch(updateStatus(null))
+        try {
+            await databaseRef.collection("sessions").doc(getState().session.sessionID).collection("students").get().then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    databaseRef.collection("sessions").doc(getState().session.sessionID).collection("students").doc(doc.id).update({ answer: [] }, { merge: true })
+                });
+            })
+            dispatch(updateStatus(null))
+        }
+        catch (e) {
+            dispatch(updateStatus("Error: " + e.message))
+        }
     }
 }

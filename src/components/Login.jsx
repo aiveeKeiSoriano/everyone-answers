@@ -1,11 +1,10 @@
 import { useDispatch } from "react-redux"
-import { SignIn } from "../actions/authActions"
 import styled from 'styled-components'
 import Typography from '@material-ui/core/Typography';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-import googleButton from '../images/btn_google_signin_light_pressed_web@2x.png'
 import { Button } from "@material-ui/core";
-
+import { SignIn } from "../actions/authActions"
+import googleButton from '../images/btn_google_signin_light_pressed_web@2x.png'
 
 const Container = styled.div`
     width: 100%;

@@ -1,11 +1,10 @@
 
-import Typography from '@material-ui/core/Typography';
-import styled from 'styled-components'
+import { useRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import styled from 'styled-components'
+import Typography from '@material-ui/core/Typography';
 import { TextField } from '@material-ui/core';
 import { listenToReset, syncAnswer } from '../actions/studentActions';
-import { useRef } from 'react';
-import { useEffect } from 'react';
 
 const Container = styled.div`
     width: 100%;

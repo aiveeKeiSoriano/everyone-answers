@@ -42,7 +42,7 @@ export const listenToReset = () => {
             if (doc.data().answer.length === 0) {
                 dispatch(resetInput(true))
             }
-        })
+        }, (err) => alert(err))
     }
 }
 

@@ -2,8 +2,7 @@
 import { useSelector, useDispatch } from 'react-redux'
 import styled from 'styled-components'
 import Typography from '@material-ui/core/Typography';
-import { Grid } from '@material-ui/core';
-import { Button } from "@material-ui/core";
+import { Grid, Button } from '@material-ui/core';
 import { clearAnswers, deleteSession, updateStatus } from '../actions/sessionActions';
 
 const Container = styled.div`

@@ -1,12 +1,12 @@
 
+import { useDispatch, useSelector } from 'react-redux';
+import styled from 'styled-components'
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import Typography from '@material-ui/core/Typography';
-import styled from 'styled-components'
-import { useDispatch, useSelector } from 'react-redux';
-import { proceedAnswer, studentSelected } from '../actions/studentActions';
 import { Button } from '@material-ui/core';
+import { proceedAnswer, studentSelected } from '../actions/studentActions';
 
 const Container = styled.div`
     width: 100%;
@@ -27,7 +27,7 @@ export default function StudentPage() {
     return (
         <Container>
             <Typography variant="h4">Select Your Name</Typography>
-            <FormControl style={{minWidth: "400px"}}>
+            <FormControl style={{ minWidth: "400px" }}>
                 <Select
                     value={name}
                     onChange={(e) => dispatch(studentSelected(e.target.value))}

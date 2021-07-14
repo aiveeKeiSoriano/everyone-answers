@@ -1,13 +1,14 @@
 
-import { LinearProgress } from '@material-ui/core';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import Typography from '@material-ui/core/Typography';
 import styled from 'styled-components'
+import { Tooltip } from '@material-ui/core';
+import Typography from '@material-ui/core/Typography';
 import { signOut } from '../actions/authActions';
 import { getSession } from '../actions/sessionActions';
 import AnswersPage from './AnswersPage';
 import EnterNames from './EnterNames';
+import LoadingPage from './Loading';
 
 const Container = styled.div`
     width: 100%;
@@ -25,15 +26,6 @@ const Nav = styled.div`
         border-radius: 50%;
         cursor: pointer;
     }
-`
-
-const Loading = styled.div`
-    width: 800px;
-    padding: 2em;
-    display: flex;
-    flex-direction: column;
-    gap: 1em;
-    align-self: center;
 `
 
 const Error = styled.div`
@@ -58,16 +50,15 @@ export default function Dashboard() {
         <Container>
             {session &&
                 <Nav>
-                    <img onClick={() => dispatch(signOut())} src={user.photoURL} alt="profile" />
+                    <Tooltip title="Log Out">
+                        <img onClick={() => dispatch(signOut())} src={user.photoURL} alt="profile" />
+                    </Tooltip>
                 </Nav>
             }
             {session === "none" ?
                 <EnterNames />
                 : !session ?
-                    <Loading>
-                        <Typography variant="h4">Loading...</Typography>
-                        <LinearProgress />
-                    </Loading>
+                    <LoadingPage />
                     : sessionError ?
                         <Error>
                             <Typography variant="h4">Error</Typography>

@@ -17,27 +17,37 @@ export const loggedOut = () => ({
 
 export const SignIn = () => {
     return async (dispatch) => {
-        let result = await firebase.auth().signInWithPopup(authProvider)
-        let user = result.user
-        let id = user.email.replace(/[.]/g, "-")
-        await databaseRef.collection("teachers").doc(id).set({
-            email: user.email
-        }, { merge: true })
-        dispatch(userRetrieved({ ...user, databaseID: id }))
+        try {
+            let result = await firebase.auth().signInWithPopup(authProvider)
+            let user = result.user
+            let id = user.email.replace(/[.]/g, "-")
+            await databaseRef.collection("teachers").doc(id).set({
+                email: user.email
+            }, { merge: true })
+            dispatch(userRetrieved({ ...user, databaseID: id }))
+        }
+        catch (e) {
+            alert(e.message)
+        }
     }
 }
 
 export const checkSignIn = () => {
     return async (dispatch) => {
-        firebase.auth().onAuthStateChanged((user) => {
-            if (user) {
-            let id = user.email.replace(/[.]/g, "-")
-                dispatch(userRetrieved({ ...user, databaseID: id }))
-            }
-            else {
-                dispatch(loggedOut())
-            }
-        })
+        try {
+            firebase.auth().onAuthStateChanged((user) => {
+                if (user) {
+                    let id = user.email.replace(/[.]/g, "-")
+                    dispatch(userRetrieved({ ...user, databaseID: id }))
+                }
+                else {
+                    dispatch(loggedOut())
+                }
+            })
+        }
+        catch (e) {
+            alert(e.message)
+        }
     }
 }
 
@@ -45,8 +55,8 @@ export const signOut = () => {
     return async (dispatch) => {
         firebase.auth().signOut().then(() => {
             dispatch(loggedOut())
-          }).catch((error) => {
-            // An error happened.
-          });
+        }).catch((error) => {
+            alert(error)
+        });
     }
 }
