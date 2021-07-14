@@ -5,6 +5,7 @@ export const STUDENT_SELECTED = "STUDENT_SELECTED"
 export const PROCEED_ANSWER = "PROCEED_ANSWER"
 export const SYNC_STATUS = "SYNC_STATUS"
 export const STUDENT_SESSION_ERROR = "STUDENT_SESSION_ERROR"
+export const RESET_INPUT = "RESET_INPUT"
 
 export const studentSessionRetrieved = (data) => ({
     type: STUDENT_SESSION_RETRIEVED,
@@ -30,6 +31,21 @@ export const studentSessionError = (err) => ({
     payload: err
 })
 
+export const resetInput = (bool) => ({
+    type: RESET_INPUT,
+    payload: bool
+})
+
+export const listenToReset = () => {
+    return async (dispatch, getState) => {
+        databaseRef.collection("sessions").doc(getState().student.session).collection("students").doc(getState().student.selected).onSnapshot((doc) => {
+            if (doc.data().answer.length === 0) {
+                dispatch(resetInput(true))
+            }
+        })
+    }
+}
+
 export const getList = (session) => {
     return async (dispatch) => {
         try {
@@ -54,6 +70,7 @@ export const syncAnswer = (answer) => {
     return async (dispatch, getState) => {
         answer = answer.split("\n")
         dispatch(syncStatus("Syncing..."))
+        dispatch(resetInput(false))
         try {
             await databaseRef.collection("sessions").doc(getState().student.session).collection("students").doc(getState().student.selected).update({ answer: answer }, { merge: true })
             dispatch(syncStatus("Sync Completed"))

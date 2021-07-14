@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import Typography from '@material-ui/core/Typography';
 import { Grid } from '@material-ui/core';
 import { Button } from "@material-ui/core";
-import { deleteSession, updateStatus } from '../actions/sessionActions';
+import { clearAnswers, deleteSession, updateStatus } from '../actions/sessionActions';
 
 const Container = styled.div`
     width: 100%;
@@ -14,6 +14,7 @@ const Container = styled.div`
     flex-direction: column;
     gap: .5em;
     margin-bottom: 2em;
+    padding: 0em 1em;
 
     a {
         color: rgb(63,81,181);
@@ -23,6 +24,12 @@ const Container = styled.div`
         display: flex;
         justify-content: space-between;
         align-items: center;
+
+        .left {
+            display: flex;
+            gap: 1em;
+            align-items: center;
+        }
     }
 `
 
@@ -63,10 +70,18 @@ export default function AnswersPage() {
         }
     }
 
+    let clear = () => {
+        dispatch(updateStatus("Clearing answers..."))
+        dispatch(clearAnswers())
+    }
+
     return (
         <Container>
             <div className="header">
-                <Typography variant='h3'>Dashboard</Typography>
+                <div className="left">
+                    <Typography variant='h3'>Dashboard</Typography>
+                    <Button onClick={clear} variant="contained" color="primary">Clear Answers</Button>
+                </div>
                 <EndSession>
                     <Typography variant="body1">{status}</Typography>
                     <Button onClick={endSession} variant="contained">End Session</Button>

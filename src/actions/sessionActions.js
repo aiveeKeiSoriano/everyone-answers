@@ -102,3 +102,14 @@ export const deleteSession = () => {
         }
     }
 }
+
+export const clearAnswers = () => {
+    return async (dispatch, getState) => {
+        await databaseRef.collection("sessions").doc(getState().session.sessionID).collection("students").get().then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                databaseRef.collection("sessions").doc(getState().session.sessionID).collection("students").doc(doc.id).update({answer: []}, {merge: true})
+            });
+        })
+        dispatch(updateStatus(null))
+    }
+}
