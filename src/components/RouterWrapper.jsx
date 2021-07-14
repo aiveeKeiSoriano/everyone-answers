@@ -9,7 +9,7 @@ export default function RouterWrapper() {
                 <Route exact path='/'>
                     <Main />
                 </Route>
-                <Route path='/student/:id' component={StudentPage} />
+                <Route path={`/student/:sessionID`} component={StudentPage} />
             </Switch>
         </Router>
     )

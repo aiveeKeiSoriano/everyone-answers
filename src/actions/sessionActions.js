@@ -87,13 +87,13 @@ export const newSession = (students) => {
 export const deleteSession = () => {
     return async (dispatch, getState) => {
         try {
-            await databaseRef.collection("teachers").doc(getState().auth.user.databaseID).update({ session: firebase.firestore.FieldValue.delete() })
+            await databaseRef.collection("teachers").doc(getState().auth.user.databaseID).update({ session: firebase.firestore.FieldValue.delete() }) //delete the session field in teacher document
             await databaseRef.collection("sessions").doc(getState().session.sessionID).collection("students").get().then((querySnapshot) => {
                 querySnapshot.forEach((doc) => {
                     databaseRef.collection("sessions").doc(getState().session.sessionID).collection("students").doc(doc.id).delete()
                 });
-            })
-            await databaseRef.collection("sessions").doc(getState().session.sessionID).delete()
+            }) //get all student document in the student collection of the session document and delete it one by one
+            await databaseRef.collection("sessions").doc(getState().session.sessionID).delete() // delete the empty session document
             dispatch(sessionRetrieved("none"))
             dispatch(updateStatus(null))
         }

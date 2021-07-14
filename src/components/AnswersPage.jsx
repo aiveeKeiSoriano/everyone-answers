@@ -51,7 +51,7 @@ export default function AnswersPage() {
     let session = useSelector(state => state.session.sessionID)
     let status = useSelector(state => state.session.status)
     let dispatch = useDispatch()
-    let link = "https://localhost:3000/student/" + session
+    let link = "https://optimistic-agnesi-f901f6.netlify.app/student/" + session
 
     let endSession = () => {
         let endConfirmation = window.confirm("The session will be deleted permanently. Do you want to proceed?")
