@@ -73,7 +73,7 @@ export const newSession = (students) => {
             await databaseRef.collection("teachers").doc(getState().auth.user.databaseID).set({ session: id }, { merge: true })
             for (let student of students) {
                 let studentsRef = databaseRef.collection("sessions").doc(id).collection("students")
-                await studentsRef.doc(student).set({ answer: "" }, { merge: true })
+                await studentsRef.doc(student).set({ answer: [] }, { merge: true })
             }
             dispatch(getSession())
         }

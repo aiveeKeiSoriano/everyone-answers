@@ -24,10 +24,19 @@ const Loading = styled.div`
     align-self: center;
 `
 
+const Error = styled.div`
+    display: flex;
+    flex-direction: column;
+    width: 800px;
+    align-self: center;
+    padding: 3em;
+`
+
 export default function StudentPage() {
 
     let session = useSelector(state => state.student.session)
     let selected = useSelector(state => state.student.selected)
+    let error = useSelector(state => state.student.error)
     let dispatch = useDispatch()
     let { sessionID } = useParams()
 
@@ -38,7 +47,12 @@ export default function StudentPage() {
 
     return (
         <Container>
-            {!session ?
+            {error ?
+                <Error>
+                    <Typography variant="h4">Error</Typography>
+                    <Typography vaiant="body1">{error}</Typography>
+                </Error>
+                : !session ?
                 <Loading>
                     <Typography variant="h4">Loading...</Typography>
                     <LinearProgress />

@@ -27,6 +27,7 @@ const Container = styled.div`
 `
 
 const Box = styled.div`
+    height: 100%;
     min-height: 180px;
     display: flex;
     flex-direction: column;
@@ -52,6 +53,7 @@ export default function AnswersPage() {
     let status = useSelector(state => state.session.status)
     let dispatch = useDispatch()
     let link = "https://optimistic-agnesi-f901f6.netlify.app/student/" + session
+    // let link = "http://localhost:3000/student/" + session
 
     let endSession = () => {
         let endConfirmation = window.confirm("The session will be deleted permanently. Do you want to proceed?")
@@ -77,7 +79,7 @@ export default function AnswersPage() {
                         <Box>
                             <Typography variant="subtitle2" color="primary">{value.name}</Typography>
                             <div className="box">
-                                {value.answer}
+                                {value.answer.map(el => <Typography variant="body1">{el}</Typography>)}
                             </div>
                         </Box>
                     </Grid>

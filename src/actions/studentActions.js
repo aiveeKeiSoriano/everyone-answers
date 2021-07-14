@@ -3,6 +3,8 @@ import { databaseRef } from "../firebase-config"
 export const STUDENT_SESSION_RETRIEVED = "STUDENT_SESSION_RETRIEVED"
 export const STUDENT_SELECTED = "STUDENT_SELECTED"
 export const PROCEED_ANSWER = "PROCEED_ANSWER"
+export const SYNC_STATUS = "SYNC_STATUS"
+export const STUDENT_SESSION_ERROR = "STUDENT_SESSION_ERROR"
 
 export const studentSessionRetrieved = (data) => ({
     type: STUDENT_SESSION_RETRIEVED,
@@ -18,13 +20,46 @@ export const proceedAnswer = () => ({
     type: PROCEED_ANSWER
 })
 
+export const syncStatus = (status) => ({
+    type: SYNC_STATUS,
+    payload: status
+})
+
+export const studentSessionError = (err) => ({
+    type: STUDENT_SESSION_ERROR,
+    payload: err
+})
+
 export const getList = (session) => {
     return async (dispatch) => {
-        await databaseRef.collection("sessions").doc(session).collection("students").get().then((querySnapshot) => {
-            let students = []
-            querySnapshot.forEach(el => students.push(el.id))
-            dispatch(studentSessionRetrieved({list: students, session}))
-        })
+        try {
+            await databaseRef.collection("sessions").doc(session).collection("students").get().then((querySnapshot) => {
+                let students = []
+                querySnapshot.forEach(el => students.push(el.id))
+                if (students.length === 0) {
+                    dispatch(studentSessionError("This session does not exist"))
+                }
+                else {
+                    dispatch(studentSessionRetrieved({ list: students, session }))
+                }
+            })
+        }
+        catch (e) {
+            dispatch(studentSessionError(e.message))
+        }
     }
 }
 
+export const syncAnswer = (answer) => {
+    return async (dispatch, getState) => {
+        answer = answer.split("\n")
+        dispatch(syncStatus("Syncing..."))
+        try {
+            await databaseRef.collection("sessions").doc(getState().student.session).collection("students").doc(getState().student.selected).update({ answer: answer }, { merge: true })
+            dispatch(syncStatus("Sync Completed"))
+        }
+        catch (e) {
+            dispatch(syncStatus("Sync Error: " + e.message))
+        }
+    }
+}
