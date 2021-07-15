@@ -1,4 +1,7 @@
 # Capstone Project - Everyone Answers
+
+Additional Features
+
 In this project you will create a web app which allows a teacher to log in and view student answers in real-time using the following technologies
 * React JS
 * Material-UI for React
