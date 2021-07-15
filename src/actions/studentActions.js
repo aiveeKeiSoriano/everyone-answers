@@ -6,6 +6,7 @@ export const PROCEED_ANSWER = "PROCEED_ANSWER"
 export const SYNC_STATUS = "SYNC_STATUS"
 export const STUDENT_SESSION_ERROR = "STUDENT_SESSION_ERROR"
 export const RESET_INPUT = "RESET_INPUT"
+export const SYNC_PROMPT = "SYNC_PROMPT"
 
 export const studentSessionRetrieved = (data) => ({
     type: STUDENT_SESSION_RETRIEVED,
@@ -35,6 +36,19 @@ export const resetInput = (bool) => ({
     type: RESET_INPUT,
     payload: bool
 })
+
+export const syncPrompt = (prompt) => ({
+    type: SYNC_PROMPT,
+    payload: prompt
+})
+
+export const listenToPrompt = () => {
+    return async (dispatch, getState) => {
+        databaseRef.collection("sessions").doc(getState().student.session).onSnapshot((doc) => {
+                dispatch(syncPrompt(doc.data().prompt))
+        }, (err) => alert(err))
+    }
+}
 
 export const listenToReset = () => {
     return async (dispatch, getState) => {

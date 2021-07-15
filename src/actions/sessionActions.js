@@ -68,7 +68,7 @@ export const getStudents = (session) => {
 export const newSession = (students) => {
     return async (dispatch, getState) => {
         try {
-            let doc = await databaseRef.collection("sessions").add({ teacher: getState().auth.user.email })
+            let doc = await databaseRef.collection("sessions").add({ teacher: getState().auth.user.email, prompt: "" })
             let id = doc.id
             await databaseRef.collection("teachers").doc(getState().auth.user.databaseID).set({ session: id }, { merge: true })
             for (let student of students) {
@@ -106,11 +106,24 @@ export const deleteSession = () => {
 export const clearAnswers = () => {
     return async (dispatch, getState) => {
         try {
+            await databaseRef.collection("sessions").doc(getState().session.sessionID).update({prompt: ""}, {merge: true})
             await databaseRef.collection("sessions").doc(getState().session.sessionID).collection("students").get().then((querySnapshot) => {
                 querySnapshot.forEach((doc) => {
                     databaseRef.collection("sessions").doc(getState().session.sessionID).collection("students").doc(doc.id).update({ answer: [] }, { merge: true })
                 });
             })
+            dispatch(updateStatus(null))
+        }
+        catch (e) {
+            dispatch(updateStatus("Error: " + e.message))
+        }
+    }
+}
+
+export const syncPrompt = (prompt) => {
+    return async (dispatch, getState) => {
+        try {
+            await databaseRef.collection("sessions").doc(getState().session.sessionID).update({ prompt }, { merge: true })
             dispatch(updateStatus(null))
         }
         catch (e) {

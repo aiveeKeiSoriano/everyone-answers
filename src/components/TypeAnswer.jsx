@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components'
 import Typography from '@material-ui/core/Typography';
 import { TextField } from '@material-ui/core';
-import { listenToReset, syncAnswer } from '../actions/studentActions';
+import { listenToPrompt, listenToReset, syncAnswer } from '../actions/studentActions';
 
 const Container = styled.div`
     width: 100%;
@@ -16,11 +16,30 @@ const Container = styled.div`
     padding: 3em 1em 1em 1em;
 `
 
+const Prompt = styled.div`
+    position: relative;
+    width: 100%;
+    min-height: 50px;
+    border-radius: 5px;
+    border: 2px solid rgb(63,81,181);
+    padding: 1em;
+
+    .label {
+        height: 20px;
+        position: absolute;
+        background-color: white;
+        top: -10px;
+        left: .5em;
+        padding: 0em .5em;
+    }
+`
+
 export default function StudentPage() {
 
     let name = useSelector(state => state.student.selected)
     let status = useSelector(state => state.student.status)
     let reset = useSelector(state => state.student.reset)
+    let prompt = useSelector(state => state.student.prompt)
     let dispatch = useDispatch()
 
     let input = useRef()
@@ -33,6 +52,7 @@ export default function StudentPage() {
 
     useEffect(() => {
         dispatch(listenToReset())
+        dispatch(listenToPrompt())
         // eslint-disable-next-line
     }, [])
 
@@ -40,6 +60,10 @@ export default function StudentPage() {
         <Container>
             <Typography variant="body1">{name}</Typography>
             <Typography variant="h4">My Answer</Typography>
+            <Prompt>
+                <div className="label"><Typography color="primary" variant="caption">Teacher's prompt</Typography></div>
+                <Typography variant="body1">{prompt}</Typography>
+            </Prompt>
             <Typography variant="body1">Enter your answer below. This text is visible to the teacher.</Typography>
             <TextField
                 inputRef={input}

@@ -1,4 +1,4 @@
-import { PROCEED_ANSWER, RESET_INPUT, STUDENT_SELECTED, STUDENT_SESSION_ERROR, STUDENT_SESSION_RETRIEVED, SYNC_STATUS } from "../actions/studentActions";
+import { PROCEED_ANSWER, RESET_INPUT, STUDENT_SELECTED, STUDENT_SESSION_ERROR, STUDENT_SESSION_RETRIEVED, SYNC_PROMPT, SYNC_STATUS } from "../actions/studentActions";
 
 
 export default function studentReducer(state = { list: [], name: "" }, action) {
@@ -15,6 +15,8 @@ export default function studentReducer(state = { list: [], name: "" }, action) {
             return { ...state, error: action.payload }
         case RESET_INPUT:
             return { ...state, reset: action.payload }
+        case SYNC_PROMPT:
+            return { ...state, prompt: action.payload }
         default:
             return state
     }
