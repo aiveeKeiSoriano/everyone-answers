@@ -4,9 +4,10 @@ import styled, { css } from 'styled-components'
 import Typography from '@material-ui/core/Typography';
 import { Grid, Button, Paper, makeStyles, IconButton, Tooltip, withStyles } from '@material-ui/core';
 import AssignmentOutlinedIcon from '@material-ui/icons/AssignmentOutlined';
-import { clearAnswers, deleteSession, syncPrompt, updateStatus } from '../actions/sessionActions';
+import { clearAnswers, deleteSession, showAddInput, syncPrompt, updateStatus } from '../actions/sessionActions';
 import TextField from '@material-ui/core/TextField';
 import AddIcon from '@material-ui/icons/Add';
+import { useRef } from 'react';
 
 const Container = styled.div`
     width: 100%;
@@ -26,6 +27,7 @@ const Container = styled.div`
         display: flex;
         justify-content: space-between;
         align-items: center;
+        flex-wrap: wrap;
 
         .left {
             display: flex;
@@ -61,6 +63,13 @@ const Box = styled.div`
 
             &:hover {
                 background-color: #3f51b5;
+            }
+
+            .addButton {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-direction: column;
             }
         }
     `}
@@ -105,22 +114,16 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const DarkTooltip = withStyles((theme) => ({
-    tooltip: {
-        backgroundColor: theme.palette.common.black,
-        color: 'rgba(255, 255, 255, 0.87)',
-        boxShadow: theme.shadows[1],
-        fontSize: 11,
-    },
-}))(Tooltip);
-
 export default function AnswersPage() {
 
     let classes = useStyles()
 
+    let newStudent = useRef()
+
     let students = useSelector(state => state.session.students)
     let session = useSelector(state => state.session.sessionID)
     let status = useSelector(state => state.session.status)
+    let addInput = useSelector(state => state.session.addInput)
     let dispatch = useDispatch()
     // let link = "https://optimistic-agnesi-f901f6.netlify.app/student/" + session
     let link = "http://localhost:3000/student/" + session
@@ -141,6 +144,15 @@ export default function AnswersPage() {
     let prompt = (e) => {
         dispatch(updateStatus("Syncing..."))
         dispatch(syncPrompt(e.target.value))
+    }
+
+    let newStudentName = (e) => {
+        if (e.key === "Enter") {
+
+        }
+        else if (e.key === "Escape") {
+            dispatch(showAddInput(false))
+        }
     }
 
     return (
@@ -183,31 +195,32 @@ export default function AnswersPage() {
                         </Box>
                     </Grid>
                 ))}
-                <Grid key={"newStudent"} item xs={4} style={{display: "none"}}>
+                <Grid key={"newStudent"} item xs={4} style={addInput ? { display: "block" } : { display: "none" }}>
                     <Box>
                         <TextField
+                            onKeyDown={newStudentName}
                             placeholder="New Student"
-                            defaultValue="New Student"
-                            helperText="Press enter after typing to save"
+                            helperText="Press enter to save, esc to cancel"
                         />
                         <div className="box">
 
                         </div>
                     </Box>
                 </Grid>
-                <Grid key={"addstudent"} item xs={4}>
+                <Grid key={"addstudent"} item xs={4} style={addInput ? { display: "none" } : { display: "block" }}>
                     <Box add>
                         <Typography variant="subtitle2" style={{ color: "white" }}>Fill</Typography>
                         <div className="box">
-                            <DarkTooltip title="Add new student">
-                                <IconButton>
-                                    <AddIcon style={{ fontSize: 100, color: "white" }} />
-                                </IconButton>
-                            </DarkTooltip>
+                            <IconButton onClick={() => dispatch(showAddInput(true))} size="small">
+                                <div className="addButton">
+                                    <AddIcon style={{ fontSize: 80, color: "white" }} />
+                                    <Typography variant="button" style={{ color: "white" }}>Add New Student</Typography>
+                                </div>
+                            </IconButton>
                         </div>
                     </Box>
                 </Grid>
-            </Grid>
+            </Grid> 
         </Container>
     )
 }

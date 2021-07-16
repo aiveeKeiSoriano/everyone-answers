@@ -5,6 +5,7 @@ export const SESSION_RETRIEVED = "SESSION_RETRIEVED"
 export const STUDENTS_RETRIEVED = "STUDENTS_RETRIEVED"
 export const STATUS = "STATUS"
 export const SESSION_ERROR = "SESSION_ERROR"
+export const SHOW_ADD_INPUT = "SHOW_ADD_INPUT"
 
 export const sessionRetrieved = (session) => ({
     type: SESSION_RETRIEVED,
@@ -24,6 +25,11 @@ export const updateStatus = (status) => ({
 export const sessionError = (error) => ({
     type: SESSION_ERROR,
     payload: error
+})
+
+export const showAddInput = (bool) => ({
+    type: SHOW_ADD_INPUT,
+    payload: bool
 })
 
 export const getSession = () => {

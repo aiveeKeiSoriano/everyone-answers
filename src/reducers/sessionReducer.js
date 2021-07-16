@@ -1,4 +1,4 @@
-import { SESSION_ERROR, SESSION_RETRIEVED, STUDENTS_RETRIEVED, STATUS } from "../actions/sessionActions"
+import { SESSION_ERROR, SESSION_RETRIEVED, STUDENTS_RETRIEVED, STATUS, SHOW_ADD_INPUT } from "../actions/sessionActions"
 
 export default function sessionReducer(state = { students: [] }, action) {
     switch (action.type) {
@@ -10,6 +10,8 @@ export default function sessionReducer(state = { students: [] }, action) {
             return { ...state, status: action.payload }
         case SESSION_ERROR:
             return { ...state, sessionError: action.payload }
+        case SHOW_ADD_INPUT:
+            return { ...state, addInput: action.payload }
         default:
             return state
     }
