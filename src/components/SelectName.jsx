@@ -36,7 +36,7 @@ export default function StudentPage() {
                     {students.map(el => <MenuItem key={el} value={el}>{el}</MenuItem>)}
                 </Select>
             </FormControl>
-            <Button onClick={() => dispatch(proceedAnswer())} color="primary" variant="contained">Continue</Button>
+            <Button onClick={() => dispatch(proceedAnswer(true))} color="primary" variant="contained">Continue</Button>
         </Container>
     )
 }

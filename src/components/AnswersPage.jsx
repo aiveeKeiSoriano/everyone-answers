@@ -2,12 +2,13 @@
 import { useSelector, useDispatch } from 'react-redux'
 import styled, { css } from 'styled-components'
 import Typography from '@material-ui/core/Typography';
-import { Grid, Button, Paper, makeStyles, IconButton, Tooltip, withStyles } from '@material-ui/core';
+import { Grid, Button, Paper, makeStyles, IconButton, Tooltip } from '@material-ui/core';
 import AssignmentOutlinedIcon from '@material-ui/icons/AssignmentOutlined';
-import { clearAnswers, deleteSession, showAddInput, syncPrompt, updateStatus } from '../actions/sessionActions';
+import DeleteIcon from '@material-ui/icons/Delete';
+import { addNewStudent, clearAnswers, deleteSession, removeStudent, showAddInput, syncPrompt, updateStatus } from '../actions/sessionActions';
 import TextField from '@material-ui/core/TextField';
 import AddIcon from '@material-ui/icons/Add';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 const Container = styled.div`
     width: 100%;
@@ -49,6 +50,23 @@ const Box = styled.div`
         border: 2px solid rgb(63,81,181);
         flex: 1;
         padding: 1em;
+    }
+
+    .top {
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .delete {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        display: none;
+    }
+
+    &:hover .delete {
+        display: block;
     }
 
     ${props => props.add && css`
@@ -108,7 +126,7 @@ const useStyles = makeStyles((theme) => ({
         '& .MuiOutlinedInput-root': {
             '& fieldset': {
                 borderColor: 'rgb(63,81,181)',
-                borderWidth: 2
+                borderWidth: 2,
             }
         }
     }
@@ -150,12 +168,27 @@ export default function AnswersPage() {
 
     let newStudentName = (e) => {
         if (e.key === "Enter") {
-
-        }
-        else if (e.key === "Escape") {
-            dispatch(showAddInput(false))
+            dispatch(addNewStudent(newStudent.current.value))
+            window.removeEventListener("keydown", escapePressed)
         }
     }
+
+    let escapePressed = (e) => {
+        if (e.key === "Escape") {
+            dispatch(showAddInput(false))
+            window.removeEventListener("keydown", escapePressed)
+        }
+    }
+
+    useEffect(() => {
+        if (addInput) {
+            window.addEventListener("keydown", escapePressed)
+        }
+        else {
+            newStudent.current.value = ""
+        }
+        // eslint-disable-next-line
+    }, [addInput])
 
     return (
         <Container>
@@ -183,6 +216,8 @@ export default function AnswersPage() {
                 onChange={prompt}
                 id="outlined-textarea"
                 multiline
+                rows={2}
+                maxRows={10}
                 variant="outlined"
                 label="Teacher's Prompt"
             />
@@ -191,7 +226,14 @@ export default function AnswersPage() {
                 {students.map((value) => (
                     <Grid key={value.name} item xs={4}>
                         <Box>
-                            <Typography variant="subtitle2" color="primary">{value.name}</Typography>
+                            <div className="top">
+                                <Typography variant="subtitle2" color="primary">{value.name}</Typography>
+                                <div className="delete">
+                                    <IconButton onClick={() => dispatch(removeStudent(value.name))} size="small">
+                                        <DeleteIcon fontSize="small" style={{ color: "#ff3737" }} />
+                                    </IconButton>
+                                </div>
+                            </div>
                             <div className="box">
                                 {value.answer.map(el => <Typography variant="body1">{el}</Typography>)}
                             </div>
@@ -202,6 +244,7 @@ export default function AnswersPage() {
                     <Box>
                         <TextField
                             onKeyDown={newStudentName}
+                            inputRef={newStudent}
                             placeholder="New Student"
                             helperText="Press enter to save, esc to cancel"
                         />
@@ -223,7 +266,7 @@ export default function AnswersPage() {
                         </div>
                     </Box>
                 </Grid>
-            </Grid> 
+            </Grid>
         </Container>
     )
 }

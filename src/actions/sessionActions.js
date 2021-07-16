@@ -137,3 +137,32 @@ export const syncPrompt = (prompt) => {
         }
     }
 }
+
+export const addNewStudent = (name) => {
+    return async (dispatch, getState) => {
+        let student = getState().session.students.find(el => el.name === name)
+        if (student) {
+            alert("Student is already in the list, use another name")
+        }
+        else {
+            try {
+                dispatch(showAddInput(false))
+                await databaseRef.collection("sessions").doc(getState().session.sessionID).collection("students").doc(name).set({ answer: [] }, { merge: true })
+            }
+            catch (e) {
+                alert(e.message)
+            }
+        }
+    }
+}
+
+export const removeStudent = (name) => {
+    return async (dispatch, getState) => {
+        try {
+            await databaseRef.collection("sessions").doc(getState().session.sessionID).collection("students").doc(name).delete()
+        }
+        catch (e) {
+            alert(e.message)
+        }
+    }
+}

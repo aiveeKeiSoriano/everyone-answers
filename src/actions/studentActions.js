@@ -18,8 +18,9 @@ export const studentSelected = (student) => ({
     payload: student
 })
 
-export const proceedAnswer = () => ({
-    type: PROCEED_ANSWER
+export const proceedAnswer = (bool) => ({
+    type: PROCEED_ANSWER,
+    payload: bool
 })
 
 export const syncStatus = (status) => ({
@@ -58,7 +59,10 @@ export const listenToPrompt = () => {
 export const listenToReset = () => {
     return async (dispatch, getState) => {
         databaseRef.collection("sessions").doc(getState().student.session).collection("students").doc(getState().student.selected).onSnapshot((doc) => {
-            if (doc.data() && doc.data().answer.length === 0) {
+            if (!doc.data()) {
+                dispatch(proceedAnswer(false))
+            }
+            else if (doc.data().answer.length === 0) {
                 dispatch(resetInput(true))
             }
         }, (err) => alert(err))
@@ -68,7 +72,7 @@ export const listenToReset = () => {
 export const getList = (session) => {
     return async (dispatch) => {
         try {
-            await databaseRef.collection("sessions").doc(session).collection("students").get().then((querySnapshot) => {
+            await databaseRef.collection("sessions").doc(session).collection("students").onSnapshot((querySnapshot) => {
                 let students = []
                 querySnapshot.forEach(el => students.push(el.id))
                 if (students.length === 0) {

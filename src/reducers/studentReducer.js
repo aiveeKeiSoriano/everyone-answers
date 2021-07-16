@@ -8,7 +8,7 @@ export default function studentReducer(state = { list: [], name: "" }, action) {
         case STUDENT_SELECTED:
             return { ...state, name: action.payload }
         case PROCEED_ANSWER:
-            return { ...state, selected: state.name }
+            return { ...state, selected: action.payload ? state.name : null }
         case SYNC_STATUS:
             return { ...state, status: action.payload }
         case STUDENT_SESSION_ERROR:
