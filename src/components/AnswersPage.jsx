@@ -119,6 +119,7 @@ export default function AnswersPage() {
     let classes = useStyles()
 
     let newStudent = useRef()
+    let promptRef = useRef()
 
     let students = useSelector(state => state.session.students)
     let session = useSelector(state => state.session.sessionID)
@@ -138,6 +139,7 @@ export default function AnswersPage() {
 
     let clear = () => {
         dispatch(updateStatus("Clearing answers..."))
+        promptRef.current.value = ""
         dispatch(clearAnswers())
     }
 
@@ -176,6 +178,7 @@ export default function AnswersPage() {
                 </Tooltip>
             </Paper>
             <TextField
+                inputRef={promptRef}
                 className={classes.prompt}
                 onChange={prompt}
                 id="outlined-textarea"

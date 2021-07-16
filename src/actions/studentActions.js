@@ -45,7 +45,12 @@ export const syncPrompt = (prompt) => ({
 export const listenToPrompt = () => {
     return async (dispatch, getState) => {
         databaseRef.collection("sessions").doc(getState().student.session).onSnapshot((doc) => {
+            if (doc.data()) {
                 dispatch(syncPrompt(doc.data().prompt))
+            }
+            else {
+                dispatch(studentSessionError("This session does not exist"))
+            }
         }, (err) => alert(err))
     }
 }
@@ -53,7 +58,7 @@ export const listenToPrompt = () => {
 export const listenToReset = () => {
     return async (dispatch, getState) => {
         databaseRef.collection("sessions").doc(getState().student.session).collection("students").doc(getState().student.selected).onSnapshot((doc) => {
-            if (doc.data().answer.length === 0) {
+            if (doc.data() && doc.data().answer.length === 0) {
                 dispatch(resetInput(true))
             }
         }, (err) => alert(err))
