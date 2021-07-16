@@ -2,6 +2,7 @@
 import firebase from 'firebase/app'
 import 'firebase/auth'
 import { authProvider, databaseRef } from '../firebase-config'
+import { resetSession } from './sessionActions'
 
 export const USER_RETRIEVED = "USER_RETRIEVED"
 export const LOGGED_OUT = "LOGGED_OUT"
@@ -55,6 +56,7 @@ export const signOut = () => {
     return async (dispatch) => {
         firebase.auth().signOut().then(() => {
             dispatch(loggedOut())
+            dispatch(resetSession())
         }).catch((error) => {
             alert(error)
         });

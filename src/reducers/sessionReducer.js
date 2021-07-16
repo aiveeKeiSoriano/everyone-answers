@@ -1,6 +1,8 @@
-import { SESSION_ERROR, SESSION_RETRIEVED, STUDENTS_RETRIEVED, STATUS } from "../actions/sessionActions"
+import { SESSION_ERROR, SESSION_RETRIEVED, STUDENTS_RETRIEVED, STATUS, RESET_SESSION } from "../actions/sessionActions"
 
-export default function sessionReducer(state = { students: [] }, action) {
+const initialState = { students: [] }
+
+export default function sessionReducer(state = initialState, action) {
     switch (action.type) {
         case SESSION_RETRIEVED:
             return { ...state, sessionID: action.payload, status: null }
@@ -10,6 +12,8 @@ export default function sessionReducer(state = { students: [] }, action) {
             return { ...state, status: action.payload }
         case SESSION_ERROR:
             return { ...state, sessionError: action.payload }
+        case RESET_SESSION:
+            return initialState
         default:
             return state
     }
