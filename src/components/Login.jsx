@@ -1,10 +1,9 @@
-import { useDispatch } from "react-redux"
 import styled from 'styled-components'
 import Typography from '@material-ui/core/Typography';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-import { Button } from "@material-ui/core";
-import { SignIn } from "../actions/authActions"
-import googleButton from '../images/btn_google_signin_light_pressed_web@2x.png'
+
+import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
+import { authRef, uiConfig } from "../firebase-config";
 
 const Container = styled.div`
     width: 100%;
@@ -21,15 +20,12 @@ const Container = styled.div`
 `
 
 export default function Login() {
-    let dispatch = useDispatch()
     return (
         <Container>
             <Typography variant='h3'>Everyone Answers</Typography>
             <Typography variant='body1'>Welcome. Please sign in.</Typography>
-            <AccountCircleIcon color='disabled' style={{ fontSize: 150}}/>
-            <Button onClick={() => dispatch(SignIn())}>
-                <img src={googleButton} alt="Sign in with google" />
-            </Button>
+            <AccountCircleIcon color='disabled' style={{ fontSize: 150 }} />
+            <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={authRef} />
         </Container>
     )
 }
