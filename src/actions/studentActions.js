@@ -36,10 +36,20 @@ export const resetInput = (bool) => ({
     payload: bool
 })
 
+export const listenToSession= () => {
+    return async (dispatch, getState) => {
+        databaseRef.collection("sessions").doc(getState().student.session).onSnapshot((doc) => {
+            if (!doc.data()) {
+                dispatch(studentSessionError("This session does not exist"))
+            }
+        }, (err) => alert(err))
+    }
+}
+
 export const listenToReset = () => {
     return async (dispatch, getState) => {
         databaseRef.collection("sessions").doc(getState().student.session).collection("students").doc(getState().student.selected).onSnapshot((doc) => {
-            if (doc.data().answer.length === 0) {
+            if (doc.data() && doc.data().answer.length === 0) {
                 dispatch(resetInput(true))
             }
         }, (err) => alert(err))

@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components'
 import Typography from '@material-ui/core/Typography';
-import { getList } from '../actions/studentActions';
+import { getList, listenToSession } from '../actions/studentActions';
 import SelectName from "./SelectName"
 import TypeAnswer from "./TypeAnswer"
 import LoadingPage from './Loading';
@@ -35,6 +35,12 @@ export default function StudentPage() {
         dispatch(getList(sessionID))
         // eslint-disable-next-line
     }, [])
+
+    useEffect(() => {
+        if (session) {
+            dispatch(listenToSession())
+        }
+    }, [session])
 
     return (
         <Container>
